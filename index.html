@@ -3,148 +3,530 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Local Video Compressor</title>
+    <title>Native Local Video Compressor</title>
+    <!-- Tailwind CSS for modern responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; background: #f4f4f9; color: #333; }
-        .card { background: #fff; padding: 24px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        h2 { margin-top: 0; font-size: 1.5rem; }
-        .form-group { margin-bottom: 16px; }
-        label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.9rem; }
-        input[type="file"], select { width: 100%; padding: 8px; box-sizing: border-box; }
-        button { background: #0066cc; color: #fff; border: none; padding: 10px 16px; font-size: 1rem; border-radius: 4px; cursor: pointer; width: 100%; }
-        button:disabled { background: #ccc; cursor: not-allowed; }
-        #progress-container { margin-top: 16px; display: none; }
-        progress { width: 100%; height: 20px; }
-        #status { font-size: 0.9rem; margin-top: 8px; color: #666; }
-        .warning { font-size: 0.8rem; color: #d9534f; margin-top: 4px; }
+        /* Custom smooth scrollbar & transition utilities */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
     </style>
 </head>
-<body>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen pb-12">
 
-<div class="card">
-    <h2>Local Video Compressor</h2>
-    <p class="warning">Note: Files larger than 200MB may cause browser memory crashes. Process happens entirely on your device.</p>
-    
-    <div class="form-group">
-        <label for="videoFile">Select Video File</label>
-        <input type="file" id="videoFile" accept="video/*">
-    </div>
+    <!-- Top Navigation Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="p-2 bg-sky-500 text-white rounded-xl shadow-md">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-slate-900 leading-tight">Native Local Video Compressor</h1>
+                    <p class="text-xs text-slate-500">100% Private Client-Side Re-encoding Engine</p>
+                </div>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                Zero External WASM
+            </span>
+        </div>
+    </header>
 
-    <div class="form-group">
-        <label for="qualityPreset">Compression Preset (CRF)</label>
-        <select id="qualityPreset">
-            <option value="20">High Quality (Larger size, near-original)</option>
-            <option value="23" selected>Balanced (Recommended, CRF 23)</option>
-            <option value="28">High Compression (Smaller size, minor quality loss)</option>
-        </select>
-    </div>
+    <main class="max-w-6xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-    <button id="compressBtn" disabled>Compress Video</button>
+        <!-- Left Column: Settings & Input Controls -->
+        <section class="lg:col-span-5 space-y-6">
+            
+            <!-- File Selector Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-4">1. Choose Input Video</h2>
+                
+                <div id="dropZone" class="border-2 border-dashed border-slate-300 hover:border-sky-500 bg-slate-50 hover:bg-sky-50/50 transition-colors duration-200 rounded-xl p-6 text-center cursor-pointer relative group">
+                    <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                    <div class="space-y-3 pointer-events-none">
+                        <div class="w-12 h-12 mx-auto rounded-full bg-sky-100 text-sky-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-slate-700 text-sm">Click or Drag & Drop Video File</p>
+                            <p class="text-xs text-slate-400 mt-1">Supports MP4, WebM, MOV, MKV</p>
+                        </div>
+                    </div>
+                </div>
 
-    <div id="progress-container">
-        <progress id="progressBar" value="0" max="100"></progress>
-        <div id="status">Loading FFmpeg engine...</div>
-    </div>
-</div>
+                <div id="fileMeta" class="hidden mt-4 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1">
+                    <p class="font-medium text-slate-800 truncate" id="metaFileName">-</p>
+                    <div class="flex justify-between text-slate-500">
+                        <span id="metaFileSize">0 MB</span>
+                        <span id="metaFileDim">0 x 0</span>
+                        <span id="metaFileDuration">0s</span>
+                    </div>
+                </div>
+            </div>
 
-<!-- Load FFmpeg and Util UMD builds -->
-<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
-<script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/index.js"></script>
+            <!-- Compression Configuration Settings Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">2. Compression Settings</h2>
 
-<script>
-    const { FFmpeg } = FFmpegWASM;
-    const { fetchFile } = FFmpegUtil;
+                <!-- Resolution Preset -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Resolution Scaling</label>
+                    <select id="resSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                        <option value="1">Original Resolution (No Resize)</option>
+                        <option value="720">720p HD (1280x720 max)</option>
+                        <option value="480" selected>480p SD (854x480 max)</option>
+                        <option value="360">360p Low (640x360 max)</option>
+                    </select>
+                </div>
 
-    let ffmpeg = null;
-    const fileInput = document.getElementById('videoFile');
-    const compressBtn = document.getElementById('compressBtn');
-    const progressContainer = document.getElementById('progress-container');
-    const progressBar = document.getElementById('progressBar');
-    const statusDiv = document.getElementById('status');
-    const qualityPreset = document.getElementById('qualityPreset');
+                <!-- Bitrate Control Slider -->
+                <div>
+                    <div class="flex justify-between items-center mb-2">
+                        <label class="text-xs font-semibold text-slate-700">Target Video Bitrate</label>
+                        <span id="bitrateValue" class="text-xs font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">1.5 Mbps</span>
+                    </div>
+                    <input type="range" id="bitrateSlider" min="0.2" max="8.0" step="0.1" value="1.5" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+                    <div class="flex justify-between text-[10px] text-slate-400 mt-1">
+                        <span>0.2 Mbps (Smallest)</span>
+                        <span>4.0 Mbps (Medium)</span>
+                        <span>8.0 Mbps (High)</span>
+                    </div>
+                </div>
 
-    async function loadFFmpeg() {
-        if (ffmpeg) return;
-        ffmpeg = new FFmpeg();
-        
-        ffmpeg.on('progress', ({ progress }) => {
-            const percent = Math.round(progress * 100);
-            progressBar.value = percent;
-            statusDiv.textContent = `Compressing... ${percent}%`;
+                <!-- Output Format Selector -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-2">Container Format</label>
+                    <select id="formatSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                        <!-- Populated via JS based on browser capabilities -->
+                    </select>
+                </div>
+
+                <!-- Action Button -->
+                <button id="startBtn" disabled class="w-full py-3 px-4 bg-sky-600 hover:bg-sky-700 disabled:bg-slate-300 text-white font-medium text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed">
+                    <svg id="btnIcon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span id="btnText">Start Compression</span>
+                </button>
+            </div>
+
+            <!-- Encoding Progress Card -->
+            <div id="progressCard" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="font-medium text-slate-700" id="progressStatus">Encoding frames...</span>
+                    <span class="font-bold text-sky-600" id="progressPercent">0%</span>
+                </div>
+                <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-slate-200">
+                    <div id="progressBar" class="bg-sky-500 h-full w-0 transition-all duration-150"></div>
+                </div>
+                <div class="flex justify-between text-xs text-slate-500">
+                    <span>Processed: <span id="timeElapsed">00:00</span></span>
+                    <span>Est. Remaining: <span id="timeRemaining">Calculating...</span></span>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Column: Video Visualizers & Final Output -->
+        <section class="lg:col-span-7 space-y-6">
+
+            <!-- Source Video Preview Card -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-3">Input Video Preview</h2>
+                <div class="bg-slate-900 rounded-xl overflow-hidden aspect-video flex items-center justify-center relative">
+                    <video id="sourceVideo" controls class="w-full h-full object-contain hidden"></video>
+                    <div id="sourcePlaceholder" class="text-slate-500 text-center text-sm p-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Select a video file to enable preview and compression
+                    </div>
+                </div>
+            </div>
+
+            <!-- Result Section Card (Hidden until compression finishes) -->
+            <div id="resultCard" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-emerald-200 bg-emerald-50/10 space-y-6">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                    <div class="flex items-center gap-2 text-emerald-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h3 class="font-bold text-base">Compression Completed!</h3>
+                    </div>
+                    <a id="downloadBtn" download="compressed_video.webm" href="#" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold shadow-sm transition flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                        Download Video
+                    </a>
+                </div>
+
+                <!-- Stats Dashboard -->
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="block text-[11px] font-semibold text-slate-400 uppercase">Original Size</span>
+                        <span id="statOriginalSize" class="text-slate-800 font-bold text-base">-</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span class="block text-[11px] font-semibold text-slate-400 uppercase">Compressed Size</span>
+                        <span id="statCompressedSize" class="text-emerald-600 font-bold text-base">-</span>
+                    </div>
+                    <div class="bg-emerald-100/50 p-3 rounded-xl border border-emerald-200">
+                        <span class="block text-[11px] font-semibold text-emerald-700 uppercase">Size Reduction</span>
+                        <span id="statSavings" class="text-emerald-700 font-bold text-base">-</span>
+                    </div>
+                </div>
+
+                <!-- Compressed Output Video Preview -->
+                <div>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Compressed Result Preview</h4>
+                    <div class="bg-slate-900 rounded-xl overflow-hidden aspect-video flex items-center justify-center">
+                        <video id="outputVideo" controls class="w-full h-full object-contain"></video>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Offscreen Work Canvas (Used by JavaScript to render video frames during compression) -->
+    <canvas id="renderCanvas" class="hidden"></canvas>
+
+    <script>
+        // Global State & UI References
+        let selectedFile = null;
+        let isProcessing = false;
+        let abortEncoding = false;
+        let currentObjectUrl = null;
+        let compressedObjectUrl = null;
+
+        const videoInput = document.getElementById('videoInput');
+        const sourceVideo = document.getElementById('sourceVideo');
+        const outputVideo = document.getElementById('outputVideo');
+        const sourcePlaceholder = document.getElementById('sourcePlaceholder');
+        const fileMeta = document.getElementById('fileMeta');
+        const metaFileName = document.getElementById('metaFileName');
+        const metaFileSize = document.getElementById('metaFileSize');
+        const metaFileDim = document.getElementById('metaFileDim');
+        const metaFileDuration = document.getElementById('metaFileDuration');
+
+        const bitrateSlider = document.getElementById('bitrateSlider');
+        const bitrateValue = document.getElementById('bitrateValue');
+        const resSelect = document.getElementById('resSelect');
+        const formatSelect = document.getElementById('formatSelect');
+        const startBtn = document.getElementById('startBtn');
+        const btnText = document.getElementById('btnText');
+
+        const progressCard = document.getElementById('progressCard');
+        const progressBar = document.getElementById('progressBar');
+        const progressPercent = document.getElementById('progressPercent');
+        const progressStatus = document.getElementById('progressStatus');
+        const timeElapsed = document.getElementById('timeElapsed');
+        const timeRemaining = document.getElementById('timeRemaining');
+
+        const resultCard = document.getElementById('resultCard');
+        const statOriginalSize = document.getElementById('statOriginalSize');
+        const statCompressedSize = document.getElementById('statCompressedSize');
+        const statSavings = document.getElementById('statSavings');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const renderCanvas = document.getElementById('renderCanvas');
+
+        // Helper: Format bytes to human readable sizes
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Helper: Format seconds to MM:SS
+        function formatTime(seconds) {
+            if (isNaN(seconds) || !isFinite(seconds)) return '00:00';
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // Detect supported browser MediaRecorder MimeTypes
+        function populateSupportedFormats() {
+            formatSelect.innerHTML = '';
+            const mimeTypes = [
+                { label: 'WebM (VP8 / Standard)', mime: 'video/webm;codecs=vp8,opus' },
+                { label: 'WebM (VP9 / High Efficiency)', mime: 'video/webm;codecs=vp9,opus' },
+                { label: 'MP4 / H.264 (If supported by browser)', mime: 'video/mp4;codecs=avc1.42E01E,mp4a.40.2' },
+                { label: 'Default Browser WebM Container', mime: 'video/webm' }
+            ];
+
+            let added = 0;
+            mimeTypes.forEach(item => {
+                if (MediaRecorder.isTypeSupported(item.mime)) {
+                    const opt = document.createElement('option');
+                    opt.value = item.mime;
+                    opt.textContent = item.label;
+                    formatSelect.appendChild(opt);
+                    added++;
+                }
+            });
+
+            if (added === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'Default MediaRecorder';
+                formatSelect.appendChild(opt);
+            }
+        }
+
+        // UI Event Listeners
+        bitrateSlider.addEventListener('input', (e) => {
+            bitrateValue.textContent = `${parseFloat(e.target.value).toFixed(1)} Mbps`;
         });
 
-        statusDiv.textContent = "Loading WebAssembly core...";
-        progressContainer.style.display = 'block';
-
-        await ffmpeg.load({
-            coreURL: "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js",
-            wasmURL: "https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm"
+        videoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) handleFileSelected(file);
         });
 
-        statusDiv.textContent = "Ready to compress.";
-        compressBtn.disabled = false;
-    }
+        function handleFileSelected(file) {
+            selectedFile = file;
+            if (currentObjectUrl) URL.revokeObjectURL(currentObjectUrl);
+            currentObjectUrl = URL.createObjectURL(file);
 
-    fileInput.addEventListener('change', () => {
-        if (fileInput.files.length > 0) {
-            loadFFmpeg();
+            sourceVideo.src = currentObjectUrl;
+            sourceVideo.classList.remove('hidden');
+            sourcePlaceholder.classList.add('hidden');
+
+            metaFileName.textContent = file.name;
+            metaFileSize.textContent = formatBytes(file.size);
+            fileMeta.classList.remove('hidden');
+
+            sourceVideo.onloadedmetadata = () => {
+                metaFileDim.textContent = `${sourceVideo.videoWidth} x ${sourceVideo.videoHeight}`;
+                metaFileDuration.textContent = `${Math.round(sourceVideo.duration)}s`;
+                startBtn.disabled = false;
+            };
+
+            resultCard.classList.add('hidden');
         }
-    });
 
-    compressBtn.addEventListener('click', async () => {
-        const file = fileInput.files[0];
-        if (!file) return;
+        // Native Compression Logic using HTML5 Canvas + MediaRecorder + Web Audio API
+        startBtn.addEventListener('click', async () => {
+            if (isProcessing) {
+                // Abort action
+                abortEncoding = true;
+                return;
+            }
 
-        compressBtn.disabled = true;
-        fileInput.disabled = true;
-        progressContainer.style.display = 'block';
-        statusDiv.textContent = "Reading input file into memory...";
+            if (!selectedFile || !sourceVideo.duration) return;
 
-        const inputName = 'input.mp4';
-        const outputName = 'output.mp4';
-        const crf = qualityPreset.value;
+            isProcessing = true;
+            abortEncoding = false;
+            startBtn.classList.replace('bg-sky-600', 'bg-rose-600');
+            startBtn.classList.replace('hover:bg-sky-700', 'hover:bg-rose-700');
+            btnText.textContent = "Cancel Processing";
 
-        try {
-            // Write input file to virtual file system
-            await ffmpeg.writeFile(inputName, await fetchFile(file));
+            progressCard.classList.remove('hidden');
+            resultCard.classList.add('hidden');
+            progressBar.style.width = '0%';
+            progressPercent.textContent = '0%';
 
-            statusDiv.textContent = "Starting compression...";
-            // Run ffmpeg command: libx264 with preset ultrafast/medium and chosen CRF
-            await ffmpeg.exec([
-                '-i', inputName,
-                '-c:v', 'libx264',
-                '-crf', crf,
-                '-preset', 'medium',
-                '-c:a', 'aac',
-                '-b:a', '128k',
-                outputName
-            ]);
+            // Calculate target dimension
+            let targetWidth = sourceVideo.videoWidth;
+            let targetHeight = sourceVideo.videoHeight;
+            const targetRes = parseInt(resSelect.value, 10);
 
-            statusDiv.textContent = "Processing complete. Preparing download...";
-            const data = await ffmpeg.readFile(outputName);
-            
-            const blob = new Blob([data.buffer], { type: 'video/mp4' });
-            const url = URL.createObjectURL(blob);
-            
-            const downloadLink = document.createElement('a');
-            downloadLink.href = url;
-            downloadLink.download = `compressed_${file.name}`;
-            downloadLink.textContent = "Download Compressed Video";
-            downloadLink.style.display = "block";
-            downloadLink.style.marginTop = "12px";
-            downloadLink.style.fontWeight = "bold";
-            
-            document.querySelector('.card').appendChild(downloadLink);
-            statusDiv.textContent = "Done!";
-        } catch (err) {
-            console.error(err);
-            statusDiv.textContent = `Error during compression: ${err.message}`;
-        } finally {
-            compressBtn.disabled = false;
-            fileInput.disabled = false;
-        }
-    });
-</script>
+            if (targetRes < targetHeight) {
+                const scale = targetRes / targetHeight;
+                targetHeight = targetRes;
+                targetWidth = Math.round(sourceVideo.videoWidth * scale);
+            }
+            // Ensure even width/height for codec compatibility
+            if (targetWidth % 2 !== 0) targetWidth--;
+            if (targetHeight % 2 !== 0) targetHeight--;
 
+            renderCanvas.width = targetWidth;
+            renderCanvas.height = targetHeight;
+            const ctx = renderCanvas.getContext('2d');
+
+            // Set up Web Audio API to capture source audio stream without feedback
+            let audioCtx, sourceNode, destNode, audioTrack;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                sourceNode = audioCtx.createMediaElementSource(sourceVideo);
+                destNode = audioCtx.createMediaStreamDestination();
+                sourceNode.connect(destNode);
+                // Connect to destination if you want to listen, but left disconnected to keep muted during encode
+                audioTrack = destNode.stream.getAudioTracks()[0];
+            } catch (err) {
+                console.warn("Audio Context creation failed or restricted:", err);
+            }
+
+            // Capture Canvas video stream at 30 FPS
+            const canvasStream = renderCanvas.captureStream(30);
+            if (audioTrack) {
+                canvasStream.addTrack(audioTrack);
+            }
+
+            // Target Bitrate in bits per second
+            const targetBitrate = parseFloat(bitrateSlider.value) * 1000000;
+            const selectedMime = formatSelect.value;
+
+            const options = {
+                videoBitsPerSecond: targetBitrate
+            };
+            if (selectedMime) options.mimeType = selectedMime;
+
+            let mediaRecorder;
+            try {
+                mediaRecorder = new MediaRecorder(canvasStream, options);
+            } catch (e) {
+                console.warn("Failed with selected mimeType, falling back to default", e);
+                mediaRecorder = new MediaRecorder(canvasStream);
+            }
+
+            const recordedChunks = [];
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data && event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+
+            const startTime = Date.now();
+            mediaRecorder.start(100); // collect 100ms chunks
+
+            // Reset video playback to beginning
+            sourceVideo.currentTime = 0;
+            sourceVideo.muted = false; // Required for media element audio processing
+
+            try {
+                await sourceVideo.play();
+            } catch (e) {
+                console.error("Autoplay failed:", e);
+            }
+
+            // Frame processing loop using requestAnimationFrame
+            function renderFrame() {
+                if (abortEncoding || sourceVideo.ended || sourceVideo.paused) {
+                    if (mediaRecorder.state !== 'inactive') {
+                        mediaRecorder.stop();
+                    }
+                    return;
+                }
+
+                // Draw resized frame onto canvas
+                ctx.drawImage(sourceVideo, 0, 0, targetWidth, targetHeight);
+
+                // Calculate progress
+                const current = sourceVideo.currentTime;
+                const total = sourceVideo.duration;
+                const percent = Math.min(100, Math.round((current / total) * 100));
+
+                progressBar.style.width = `${percent}%`;
+                progressPercent.textContent = `${percent}%`;
+
+                const elapsedSec = (Date.now() - startTime) / 1000;
+                timeElapsed.textContent = formatTime(elapsedSec);
+
+                if (percent > 0) {
+                    const estTotalSec = (elapsedSec / (percent / 100));
+                    const remainingSec = Math.max(0, estTotalSec - elapsedSec);
+                    timeRemaining.textContent = formatTime(remainingSec);
+                }
+
+                requestAnimationFrame(renderFrame);
+            }
+
+            requestAnimationFrame(renderFrame);
+
+            // Handle completion of MediaRecorder
+            mediaRecorder.onstop = () => {
+                sourceVideo.pause();
+                if (audioCtx) audioCtx.close();
+
+                // Reset button UI
+                isProcessing = false;
+                startBtn.classList.replace('bg-rose-600', 'bg-sky-600');
+                startBtn.classList.replace('hover:bg-rose-700', 'hover:bg-sky-700');
+                btnText.textContent = "Start Compression";
+                progressCard.classList.add('hidden');
+
+                if (abortEncoding) {
+                    alert("Compression cancelled by user.");
+                    return;
+                }
+
+                // Finalize output video blob
+                const blobType = mediaRecorder.mimeType || 'video/webm';
+                const compressedBlob = new Blob(recordedChunks, { type: blobType });
+
+                if (compressedObjectUrl) URL.revokeObjectURL(compressedObjectUrl);
+                compressedObjectUrl = URL.createObjectURL(compressedBlob);
+
+                outputVideo.src = compressedObjectUrl;
+                downloadBtn.href = compressedObjectUrl;
+
+                const ext = blobType.includes('mp4') ? 'mp4' : 'webm';
+                downloadBtn.download = `compressed_${selectedFile.name.replace(/\.[^/.]+$/, "")}.${ext}`;
+
+                // Calculate Stats
+                const origSize = selectedFile.size;
+                const compSize = compressedBlob.size;
+                const diff = origSize - compSize;
+                const savingsPct = Math.round((diff / origSize) * 100);
+
+                statOriginalSize.textContent = formatBytes(origSize);
+                statCompressedSize.textContent = formatBytes(compSize);
+
+                if (savingsPct > 0) {
+                    statSavings.textContent = `-${savingsPct}%`;
+                    statSavings.className = "text-emerald-700 font-bold text-base";
+                } else {
+                    statSavings.textContent = `+${Math.abs(savingsPct)}%`;
+                    statSavings.className = "text-amber-600 font-bold text-base";
+                }
+
+                resultCard.classList.remove('hidden');
+                resultCard.scrollIntoView({ behavior: 'smooth' });
+            };
+        });
+
+        // Initialize Formats on startup
+        populateSupportedFormats();
+    </script>
 </body>
 </html>
