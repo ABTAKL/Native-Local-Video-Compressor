@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Native Local Video Compressor</title>
-    <!-- Tailwind CSS for modern responsive styling -->
+    <title>Native Local Video Studio & Compressor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -24,28 +23,18 @@
         }
     </script>
     <style>
-        /* Custom smooth scrollbar & transition utilities */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        #overlayCanvas { touch-action: none; }
     </style>
 </head>
 <body class="bg-slate-100 text-slate-800 font-sans min-h-screen pb-12">
 
     <!-- Top Navigation Header -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <div class="p-2 bg-sky-500 text-white rounded-xl shadow-md">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -53,8 +42,8 @@
                     </svg>
                 </div>
                 <div>
-                    <h1 class="font-bold text-lg text-slate-900 leading-tight">Native Local Video Compressor</h1>
-                    <p class="text-xs text-slate-500">100% Private Client-Side Re-encoding Engine</p>
+                    <h1 class="font-bold text-lg text-slate-900 leading-tight">Native Local Video Studio</h1>
+                    <p class="text-xs text-slate-500">Cut, Crop, Rotate, Remove Objects & Compress 100% Locally</p>
                 </div>
             </div>
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">
@@ -64,31 +53,31 @@
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <main class="max-w-7xl mx-auto px-4 mt-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-        <!-- Left Column: Settings & Input Controls -->
-        <section class="lg:col-span-5 space-y-6">
+        <!-- Left Column: Controls -->
+        <section class="lg:col-span-5 space-y-5">
             
-            <!-- File Selector Card -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-4">1. Choose Input Video</h2>
+            <!-- 1. File Selector Card -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">1. Choose Input Video</h2>
                 
-                <div id="dropZone" class="border-2 border-dashed border-slate-300 hover:border-sky-500 bg-slate-50 hover:bg-sky-50/50 transition-colors duration-200 rounded-xl p-6 text-center cursor-pointer relative group">
+                <div id="dropZone" class="border-2 border-dashed border-slate-300 hover:border-sky-500 bg-slate-50 hover:bg-sky-50/50 transition-colors duration-200 rounded-xl p-5 text-center cursor-pointer relative group">
                     <input type="file" id="videoInput" accept="video/mp4,video/webm,video/quicktime,video/x-matroska" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
-                    <div class="space-y-3 pointer-events-none">
-                        <div class="w-12 h-12 mx-auto rounded-full bg-sky-100 text-sky-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <div class="space-y-2 pointer-events-none">
+                        <div class="w-10 h-10 mx-auto rounded-full bg-sky-100 text-sky-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                             </svg>
                         </div>
                         <div>
                             <p class="font-semibold text-slate-700 text-sm">Click or Drag & Drop Video File</p>
-                            <p class="text-xs text-slate-400 mt-1">Supports MP4, WebM, MOV, MKV</p>
+                            <p class="text-xs text-slate-400">Supports MP4, WebM, MOV, MKV</p>
                         </div>
                     </div>
                 </div>
 
-                <div id="fileMeta" class="hidden mt-4 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1">
+                <div id="fileMeta" class="hidden mt-3 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1">
                     <p class="font-medium text-slate-800 truncate" id="metaFileName">-</p>
                     <div class="flex justify-between text-slate-500">
                         <span id="metaFileSize">0 MB</span>
@@ -98,24 +87,124 @@
                 </div>
             </div>
 
-            <!-- Compression Configuration Settings Card -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-5">
-                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">2. Compression Settings</h2>
-
-                <!-- Resolution Preset -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-2">Resolution Scaling</label>
-                    <select id="resSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
-                        <option value="1">Original Resolution (No Resize)</option>
-                        <option value="720">720p HD (1280x720 max)</option>
-                        <option value="480" selected>480p SD (854x480 max)</option>
-                        <option value="360">360p Low (640x360 max)</option>
-                    </select>
+            <!-- 2. Video Editing Tools (Tabs) -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">2. Video Editing Tools</h2>
+                    <button id="resetEditsBtn" class="text-xs text-rose-600 hover:underline font-medium">Reset All Edits</button>
                 </div>
 
-                <!-- Bitrate Control Slider -->
+                <!-- Tool Tabs -->
+                <div class="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                    <button type="button" data-tab="cut" class="edit-tab py-2 rounded-lg bg-white text-sky-600 shadow-sm transition">Cut</button>
+                    <button type="button" data-tab="crop" class="edit-tab py-2 rounded-lg text-slate-600 hover:text-slate-900 transition">Crop</button>
+                    <button type="button" data-tab="rotate" class="edit-tab py-2 rounded-lg text-slate-600 hover:text-slate-900 transition">Rotate</button>
+                    <button type="button" data-tab="remove" class="edit-tab py-2 rounded-lg text-slate-600 hover:text-slate-900 transition">Erase Obj</button>
+                </div>
+
+                <!-- TAB 1: CUT / TRIM -->
+                <div id="panel-cut" class="tab-panel space-y-3 pt-1">
+                    <p class="text-xs text-slate-500">Trim start and end times (in seconds) to cut unwanted segments.</p>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Start Time (sec)</label>
+                            <div class="flex gap-1.5">
+                                <input type="number" id="trimStartInput" min="0" step="0.1" value="0" class="w-full bg-white border border-slate-300 rounded px-2 py-1 text-xs font-mono">
+                                <button type="button" id="setStartCurrentBtn" title="Use current video time" class="px-2 py-1 bg-sky-100 text-sky-700 hover:bg-sky-200 rounded text-[11px] font-semibold shrink-0">Now</button>
+                            </div>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">End Time (sec)</label>
+                            <div class="flex gap-1.5">
+                                <input type="number" id="trimEndInput" min="0" step="0.1" value="0" class="w-full bg-white border border-slate-300 rounded px-2 py-1 text-xs font-mono">
+                                <button type="button" id="setEndCurrentBtn" title="Use current video time" class="px-2 py-1 bg-sky-100 text-sky-700 hover:bg-sky-200 rounded text-[11px] font-semibold shrink-0">Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center text-xs text-slate-600 bg-sky-50/70 px-3 py-2 rounded-lg border border-sky-100">
+                        <span>Selected Clip Duration:</span>
+                        <span id="clipDurationLabel" class="font-bold text-sky-700">0.0s</span>
+                    </div>
+                </div>
+
+                <!-- TAB 2: CROP -->
+                <div id="panel-crop" class="tab-panel hidden space-y-3 pt-1">
+                    <div class="flex items-center justify-between">
+                        <label class="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 cursor-pointer">
+                            <input type="checkbox" id="enableCropCheckbox" class="rounded text-sky-600 focus:ring-sky-500">
+                            Enable Crop Box on Preview
+                        </label>
+                        <button type="button" id="resetCropBtn" class="text-xs text-sky-600 hover:underline">Full Frame</button>
+                    </div>
+                    <div class="grid grid-cols-5 gap-1.5 text-xs">
+                        <button type="button" data-aspect="free" class="aspect-btn py-1.5 bg-sky-600 text-white rounded font-medium">Free</button>
+                        <button type="button" data-aspect="1.7777" class="aspect-btn py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-medium">16:9</button>
+                        <button type="button" data-aspect="0.5625" class="aspect-btn py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-medium">9:16</button>
+                        <button type="button" data-aspect="1" class="aspect-btn py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-medium">1:1</button>
+                        <button type="button" data-aspect="1.3333" class="aspect-btn py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded font-medium">4:3</button>
+                    </div>
+                    <p id="cropDimLabel" class="text-[11px] text-slate-500 font-mono bg-slate-50 p-2 rounded border border-slate-200">Crop Area: Full Frame</p>
+                </div>
+
+                <!-- TAB 3: ROTATE -->
+                <div id="panel-rotate" class="tab-panel hidden space-y-3 pt-1">
+                    <p class="text-xs text-slate-500">Rotate video orientation clockwise. Output dimensions swap automatically at 90° and 270°.</p>
+                    <div class="grid grid-cols-4 gap-2 text-xs font-semibold">
+                        <button type="button" data-rot="0" class="rot-btn py-2.5 rounded-lg bg-sky-600 text-white shadow-sm">0°</button>
+                        <button type="button" data-rot="90" class="rot-btn py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">90° CW</button>
+                        <button type="button" data-rot="180" class="rot-btn py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">180°</button>
+                        <button type="button" data-rot="270" class="rot-btn py-2.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">270° CW</button>
+                    </div>
+                </div>
+
+                <!-- TAB 4: REMOVE OBJECT -->
+                <div id="panel-remove" class="tab-panel hidden space-y-3 pt-1">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-semibold text-slate-700">Draw boxes on video to erase objects</span>
+                        <button type="button" id="clearMasksBtn" class="text-xs text-rose-600 hover:underline font-medium">Clear Masks (<span id="maskCount">0</span>)</button>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Removal Method</label>
+                            <select id="removeMethodSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2 py-1.5 text-xs">
+                                <option value="inpaint">Smart Edge-Fill (Inpaint)</option>
+                                <option value="blur">Heavy Gaussian Blur</option>
+                                <option value="solid">Solid Color Patch</option>
+                            </select>
+                        </div>
+                        <div id="solidColorWrapper" class="hidden">
+                            <label class="block text-[11px] font-semibold text-slate-600 mb-1">Patch Color</label>
+                            <input type="color" id="maskColorInput" value="#000000" class="w-full h-7 rounded cursor-pointer border border-slate-300">
+                        </div>
+                    </div>
+                    <p class="text-[11px] text-slate-500 bg-amber-50 border border-amber-200 text-amber-800 p-2 rounded-lg">
+                        Click and drag directly over watermarks, logos, or unwanted objects in the preview player. Click a mask box to delete it.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 3. Compression Settings Card -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">3. Compression & Export</h2>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Resolution Scaling</label>
+                        <select id="resSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none">
+                            <option value="1">Original (No Resize)</option>
+                            <option value="720">720p HD Max</option>
+                            <option value="480" selected>480p SD Max</option>
+                            <option value="360">360p Low Max</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Container Format</label>
+                        <select id="formatSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-2 text-xs focus:ring-2 focus:ring-sky-500 focus:outline-none"></select>
+                    </div>
+                </div>
+
                 <div>
-                    <div class="flex justify-between items-center mb-2">
+                    <div class="flex justify-between items-center mb-1.5">
                         <label class="text-xs font-semibold text-slate-700">Target Video Bitrate</label>
                         <span id="bitrateValue" class="text-xs font-bold text-sky-600 bg-sky-50 px-2 py-0.5 rounded border border-sky-200">1.5 Mbps</span>
                     </div>
@@ -127,26 +216,17 @@
                     </div>
                 </div>
 
-                <!-- Output Format Selector -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-700 mb-2">Container Format</label>
-                    <select id="formatSelect" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-sky-500 focus:outline-none">
-                        <!-- Populated via JS based on browser capabilities -->
-                    </select>
-                </div>
-
-                <!-- Action Button -->
-                <button id="startBtn" disabled class="w-full py-3 px-4 bg-sky-600 hover:bg-sky-700 disabled:bg-slate-300 text-white font-medium text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed">
+                <button id="startBtn" disabled class="w-full py-3 px-4 bg-sky-600 hover:bg-sky-700 disabled:bg-slate-300 text-white font-semibold text-sm rounded-xl transition shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed">
                     <svg id="btnIcon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span id="btnText">Start Compression</span>
+                    <span id="btnText">Process & Compress Video</span>
                 </button>
             </div>
 
             <!-- Encoding Progress Card -->
-            <div id="progressCard" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
+            <div id="progressCard" class="hidden bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
                 <div class="flex justify-between items-center text-sm">
                     <span class="font-medium text-slate-700" id="progressStatus">Encoding frames...</span>
                     <span class="font-bold text-sky-600" id="progressPercent">0%</span>
@@ -155,40 +235,59 @@
                     <div id="progressBar" class="bg-sky-500 h-full w-0 transition-all duration-150"></div>
                 </div>
                 <div class="flex justify-between text-xs text-slate-500">
-                    <span>Processed: <span id="timeElapsed">00:00</span></span>
-                    <span>Est. Remaining: <span id="timeRemaining">Calculating...</span></span>
+                    <span>Elapsed: <span id="timeElapsed">00:00</span></span>
+                    <span>Remaining: <span id="timeRemaining">Calculating...</span></span>
                 </div>
             </div>
 
         </section>
 
-        <!-- Right Column: Video Visualizers & Final Output -->
+        <!-- Right Column: Interactive Preview & Output -->
         <section class="lg:col-span-7 space-y-6">
 
-            <!-- Source Video Preview Card -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500 mb-3">Input Video Preview</h2>
-                <div class="bg-slate-900 rounded-xl overflow-hidden aspect-video flex items-center justify-center relative">
-                    <video id="sourceVideo" controls class="w-full h-full object-contain hidden"></video>
+            <!-- Interactive Source Preview Card -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Interactive Video Editor Preview</h2>
+                    <span id="activeModeBadge" class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600">Mode: Cut / View</span>
+                </div>
+
+                <!-- Video + Interactive Overlay Wrapper -->
+                <div id="previewStage" class="bg-slate-900 rounded-xl overflow-hidden aspect-video flex items-center justify-center relative select-none">
+                    <video id="sourceVideo" class="max-w-full max-h-full object-contain hidden"></video>
+                    <canvas id="overlayCanvas" class="absolute hidden"></canvas>
+                    
                     <div id="sourcePlaceholder" class="text-slate-500 text-center text-sm p-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 mx-auto mb-2 opacity-40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
-                        Select a video file to enable preview and compression
+                        Select a video file to begin editing and compression
+                    </div>
+                </div>
+
+                <!-- Custom Scrubber & Playback Controls (Keeps overlay canvas clickable) -->
+                <div id="playerControls" class="hidden bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
+                    <div class="flex items-center gap-3">
+                        <button type="button" id="playPauseBtn" class="p-2 bg-sky-600 hover:bg-sky-700 text-white rounded-lg transition">
+                            <svg id="playIcon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                            <svg id="pauseIcon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 hidden" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                        </button>
+                        <input type="range" id="seekSlider" min="0" max="100" step="0.05" value="0" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+                        <span id="timeDisplay" class="text-xs font-mono text-slate-600 shrink-0">00:00 / 00:00</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Result Section Card (Hidden until compression finishes) -->
-            <div id="resultCard" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-emerald-200 bg-emerald-50/10 space-y-6">
+            <!-- Result Section Card -->
+            <div id="resultCard" class="hidden bg-white p-6 rounded-2xl shadow-sm border border-emerald-200 bg-emerald-50/10 space-y-5">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-4">
                     <div class="flex items-center gap-2 text-emerald-700">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        <h3 class="font-bold text-base">Compression Completed!</h3>
+                        <h3 class="font-bold text-base">Export Completed!</h3>
                     </div>
-                    <a id="downloadBtn" download="compressed_video.webm" href="#" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold shadow-sm transition flex items-center gap-2">
+                    <a id="downloadBtn" download="edited_video.webm" href="#" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-semibold shadow-sm transition flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                         </svg>
@@ -203,18 +302,17 @@
                         <span id="statOriginalSize" class="text-slate-800 font-bold text-base">-</span>
                     </div>
                     <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
-                        <span class="block text-[11px] font-semibold text-slate-400 uppercase">Compressed Size</span>
+                        <span class="block text-[11px] font-semibold text-slate-400 uppercase">Output Size</span>
                         <span id="statCompressedSize" class="text-emerald-600 font-bold text-base">-</span>
                     </div>
                     <div class="bg-emerald-100/50 p-3 rounded-xl border border-emerald-200">
-                        <span class="block text-[11px] font-semibold text-emerald-700 uppercase">Size Reduction</span>
+                        <span class="block text-[11px] font-semibold text-emerald-700 uppercase">Size Change</span>
                         <span id="statSavings" class="text-emerald-700 font-bold text-base">-</span>
                     </div>
                 </div>
 
-                <!-- Compressed Output Video Preview -->
                 <div>
-                    <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Compressed Result Preview</h4>
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">Final Output Preview</h4>
                     <div class="bg-slate-900 rounded-xl overflow-hidden aspect-video flex items-center justify-center">
                         <video id="outputVideo" controls class="w-full h-full object-contain"></video>
                     </div>
@@ -224,26 +322,70 @@
         </section>
     </main>
 
-    <!-- Offscreen Work Canvas (Used by JavaScript to render video frames during compression) -->
+    <!-- Offscreen Processing Canvases -->
+    <canvas id="workCanvas" class="hidden"></canvas>
     <canvas id="renderCanvas" class="hidden"></canvas>
 
     <script>
-        // Global State & UI References
+        // --- Core State ---
         let selectedFile = null;
         let isProcessing = false;
         let abortEncoding = false;
         let currentObjectUrl = null;
         let compressedObjectUrl = null;
 
+        // Audio nodes reused across multiple encodes
+        let sharedAudioCtx = null;
+        let sharedSourceNode = null;
+
+        // Editing State (Normalized 0..1 coordinates relative to rotated frame)
+        let activeTab = 'cut';
+        let trimStart = 0;
+        let trimEnd = 0;
+        let rotation = 0; // 0, 90, 180, 270
+        let cropEnabled = false;
+        let cropAspect = null; // null = free, or numeric ratio
+        let cropRect = { x: 0.1, y: 0.1, w: 0.8, h: 0.8 };
+        let removalMasks = []; // Array of { x, y, w, h } in normalized 0..1 rotated space
+
+        // Interaction State for Overlay Canvas
+        let dragState = null;
+
+        // --- DOM Elements ---
         const videoInput = document.getElementById('videoInput');
         const sourceVideo = document.getElementById('sourceVideo');
         const outputVideo = document.getElementById('outputVideo');
+        const overlayCanvas = document.getElementById('overlayCanvas');
+        const overlayCtx = overlayCanvas.getContext('2d');
+        const workCanvas = document.getElementById('workCanvas');
+        const workCtx = workCanvas.getContext('2d', { willReadFrequently: true });
+        const renderCanvas = document.getElementById('renderCanvas');
+        const renderCtx = renderCanvas.getContext('2d');
+
         const sourcePlaceholder = document.getElementById('sourcePlaceholder');
+        const playerControls = document.getElementById('playerControls');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const playIcon = document.getElementById('playIcon');
+        const pauseIcon = document.getElementById('pauseIcon');
+        const seekSlider = document.getElementById('seekSlider');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const activeModeBadge = document.getElementById('activeModeBadge');
+
         const fileMeta = document.getElementById('fileMeta');
         const metaFileName = document.getElementById('metaFileName');
         const metaFileSize = document.getElementById('metaFileSize');
         const metaFileDim = document.getElementById('metaFileDim');
         const metaFileDuration = document.getElementById('metaFileDuration');
+
+        const trimStartInput = document.getElementById('trimStartInput');
+        const trimEndInput = document.getElementById('trimEndInput');
+        const clipDurationLabel = document.getElementById('clipDurationLabel');
+        const enableCropCheckbox = document.getElementById('enableCropCheckbox');
+        const cropDimLabel = document.getElementById('cropDimLabel');
+        const removeMethodSelect = document.getElementById('removeMethodSelect');
+        const solidColorWrapper = document.getElementById('solidColorWrapper');
+        const maskColorInput = document.getElementById('maskColorInput');
+        const maskCount = document.getElementById('maskCount');
 
         const bitrateSlider = document.getElementById('bitrateSlider');
         const bitrateValue = document.getElementById('bitrateValue');
@@ -255,7 +397,6 @@
         const progressCard = document.getElementById('progressCard');
         const progressBar = document.getElementById('progressBar');
         const progressPercent = document.getElementById('progressPercent');
-        const progressStatus = document.getElementById('progressStatus');
         const timeElapsed = document.getElementById('timeElapsed');
         const timeRemaining = document.getElementById('timeRemaining');
 
@@ -264,9 +405,8 @@
         const statCompressedSize = document.getElementById('statCompressedSize');
         const statSavings = document.getElementById('statSavings');
         const downloadBtn = document.getElementById('downloadBtn');
-        const renderCanvas = document.getElementById('renderCanvas');
 
-        // Helper: Format bytes to human readable sizes
+        // --- Utility Helpers ---
         function formatBytes(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -275,7 +415,6 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        // Helper: Format seconds to MM:SS
         function formatTime(seconds) {
             if (isNaN(seconds) || !isFinite(seconds)) return '00:00';
             const m = Math.floor(seconds / 60);
@@ -283,16 +422,23 @@
             return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
         }
 
-        // Detect supported browser MediaRecorder MimeTypes
+        function getRotatedDimensions() {
+            const vw = sourceVideo.videoWidth || 1280;
+            const vh = sourceVideo.videoHeight || 720;
+            if (rotation === 90 || rotation === 270) {
+                return { width: vh, height: vw };
+            }
+            return { width: vw, height: vh };
+        }
+
         function populateSupportedFormats() {
             formatSelect.innerHTML = '';
             const mimeTypes = [
                 { label: 'WebM (VP8 / Standard)', mime: 'video/webm;codecs=vp8,opus' },
                 { label: 'WebM (VP9 / High Efficiency)', mime: 'video/webm;codecs=vp9,opus' },
-                { label: 'MP4 / H.264 (If supported by browser)', mime: 'video/mp4;codecs=avc1.42E01E,mp4a.40.2' },
-                { label: 'Default Browser WebM Container', mime: 'video/webm' }
+                { label: 'MP4 / H.264 (Browser Dependent)', mime: 'video/mp4;codecs=avc1.42E01E,mp4a.40.2' },
+                { label: 'Default WebM Container', mime: 'video/webm' }
             ];
-
             let added = 0;
             mimeTypes.forEach(item => {
                 if (MediaRecorder.isTypeSupported(item.mime)) {
@@ -303,7 +449,6 @@
                     added++;
                 }
             });
-
             if (added === 0) {
                 const opt = document.createElement('option');
                 opt.value = '';
@@ -312,7 +457,188 @@
             }
         }
 
-        // UI Event Listeners
+        // --- Tab & Edit Tool Controls ---
+        document.querySelectorAll('.edit-tab').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.edit-tab').forEach(b => {
+                    b.classList.remove('bg-white', 'text-sky-600', 'shadow-sm');
+                    b.classList.add('text-slate-600');
+                });
+                btn.classList.add('bg-white', 'text-sky-600', 'shadow-sm');
+                btn.classList.remove('text-slate-600');
+
+                activeTab = btn.dataset.tab;
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+                document.getElementById(`panel-${activeTab}`).classList.remove('hidden');
+
+                const modeLabels = {
+                    cut: 'Mode: Cut / Trim',
+                    crop: 'Mode: Drag Crop Box',
+                    rotate: 'Mode: Rotate Orientation',
+                    remove: 'Mode: Draw Erase Box'
+                };
+                activeModeBadge.textContent = modeLabels[activeTab];
+
+                if (activeTab === 'crop' && !cropEnabled) {
+                    cropEnabled = true;
+                    enableCropCheckbox.checked = true;
+                    updateCropLabel();
+                }
+                drawOverlay();
+            });
+        });
+
+        // Cut / Trim Listeners
+        function updateTrimUI() {
+            const dur = sourceVideo.duration || 0;
+            trimStart = Math.max(0, Math.min(parseFloat(trimStartInput.value) || 0, dur));
+            trimEnd = Math.max(trimStart + 0.1, Math.min(parseFloat(trimEndInput.value) || dur, dur));
+            clipDurationLabel.textContent = `${Math.max(0, trimEnd - trimStart).toFixed(1)}s`;
+        }
+        trimStartInput.addEventListener('change', () => {
+            updateTrimUI();
+            sourceVideo.currentTime = trimStart;
+        });
+        trimEndInput.addEventListener('change', updateTrimUI);
+        document.getElementById('setStartCurrentBtn').addEventListener('click', () => {
+            trimStartInput.value = sourceVideo.currentTime.toFixed(1);
+            updateTrimUI();
+        });
+        document.getElementById('setEndCurrentBtn').addEventListener('click', () => {
+            trimEndInput.value = sourceVideo.currentTime.toFixed(1);
+            updateTrimUI();
+        });
+
+        // Crop Listeners
+        function updateCropLabel() {
+            if (!cropEnabled) {
+                cropDimLabel.textContent = 'Crop Area: Full Frame';
+                return;
+            }
+            const rotDim = getRotatedDimensions();
+            const cw = Math.round(cropRect.w * rotDim.width);
+            const ch = Math.round(cropRect.h * rotDim.height);
+            cropDimLabel.textContent = `Crop Area: ${cw} x ${ch} px`;
+        }
+
+        enableCropCheckbox.addEventListener('change', (e) => {
+            cropEnabled = e.target.checked;
+            updateCropLabel();
+            drawOverlay();
+        });
+
+        document.getElementById('resetCropBtn').addEventListener('click', () => {
+            cropRect = { x: 0, y: 0, w: 1, h: 1 };
+            updateCropLabel();
+            drawOverlay();
+        });
+
+        document.querySelectorAll('.aspect-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.aspect-btn').forEach(b => {
+                    b.classList.remove('bg-sky-600', 'text-white');
+                    b.classList.add('bg-slate-100', 'text-slate-700');
+                });
+                btn.classList.add('bg-sky-600', 'text-white');
+                btn.classList.remove('bg-slate-100', 'text-slate-700');
+
+                const val = btn.dataset.aspect;
+                cropAspect = val === 'free' ? null : parseFloat(val);
+                cropEnabled = true;
+                enableCropCheckbox.checked = true;
+
+                if (cropAspect) {
+                    const rotDim = getRotatedDimensions();
+                    const frameRatio = rotDim.width / rotDim.height;
+                    let newW = 0.8;
+                    let newH = (newW * frameRatio) / cropAspect;
+                    if (newH > 0.8) {
+                        newH = 0.8;
+                        newW = (newH * cropAspect) / frameRatio;
+                    }
+                    cropRect = {
+                        x: (1 - newW) / 2,
+                        y: (1 - newH) / 2,
+                        w: newW,
+                        h: newH
+                    };
+                }
+                updateCropLabel();
+                drawOverlay();
+            });
+        });
+
+        // Rotate Listeners
+        document.querySelectorAll('.rot-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.rot-btn').forEach(b => {
+                    b.classList.remove('bg-sky-600', 'text-white', 'shadow-sm');
+                    b.classList.add('bg-slate-100', 'text-slate-700');
+                });
+                btn.classList.add('bg-sky-600', 'text-white', 'shadow-sm');
+                btn.classList.remove('bg-slate-100', 'text-slate-700');
+
+                rotation = parseInt(btn.dataset.rot, 10);
+                applyPreviewRotationCSS();
+                updateCropLabel();
+                setTimeout(syncOverlaySize, 50);
+            });
+        });
+
+        function applyPreviewRotationCSS() {
+            if (!sourceVideo.videoWidth) return;
+            const stage = document.getElementById('previewStage');
+            const stageW = stage.clientWidth;
+            const stageH = stage.clientHeight;
+            let scale = 1;
+            if (rotation === 90 || rotation === 270) {
+                // Scale down rotated video so it fits cleanly inside the 16:9 container
+                const videoAspect = sourceVideo.videoWidth / sourceVideo.videoHeight;
+                scale = Math.min(stageH / (stageH * videoAspect), 1);
+            }
+            sourceVideo.style.transform = `rotate(${rotation}deg) scale(${scale})`;
+            syncOverlaySize();
+        }
+
+        // Remove Object Listeners
+        removeMethodSelect.addEventListener('change', (e) => {
+            solidColorWrapper.classList.toggle('hidden', e.target.value !== 'solid');
+            drawOverlay();
+        });
+        document.getElementById('clearMasksBtn').addEventListener('click', () => {
+            removalMasks = [];
+            maskCount.textContent = '0';
+            drawOverlay();
+        });
+
+        // Reset All Edits
+        document.getElementById('resetEditsBtn').addEventListener('click', () => {
+            trimStart = 0;
+            trimEnd = sourceVideo.duration || 0;
+            trimStartInput.value = 0;
+            trimEndInput.value = trimEnd.toFixed(1);
+            updateTrimUI();
+
+            rotation = 0;
+            document.querySelectorAll('.rot-btn').forEach(b => {
+                b.classList.toggle('bg-sky-600', b.dataset.rot === '0');
+                b.classList.toggle('text-white', b.dataset.rot === '0');
+                b.classList.toggle('bg-slate-100', b.dataset.rot !== '0');
+                b.classList.toggle('text-slate-700', b.dataset.rot !== '0');
+            });
+            applyPreviewRotationCSS();
+
+            cropEnabled = false;
+            enableCropCheckbox.checked = false;
+            cropRect = { x: 0.1, y: 0.1, w: 0.8, h: 0.8 };
+            updateCropLabel();
+
+            removalMasks = [];
+            maskCount.textContent = '0';
+            drawOverlay();
+        });
+
+        // --- File Selection & Player Controls ---
         bitrateSlider.addEventListener('input', (e) => {
             bitrateValue.textContent = `${parseFloat(e.target.value).toFixed(1)} Mbps`;
         });
@@ -329,6 +655,8 @@
 
             sourceVideo.src = currentObjectUrl;
             sourceVideo.classList.remove('hidden');
+            overlayCanvas.classList.remove('hidden');
+            playerControls.classList.remove('hidden');
             sourcePlaceholder.classList.add('hidden');
 
             metaFileName.textContent = file.name;
@@ -337,21 +665,361 @@
 
             sourceVideo.onloadedmetadata = () => {
                 metaFileDim.textContent = `${sourceVideo.videoWidth} x ${sourceVideo.videoHeight}`;
-                metaFileDuration.textContent = `${Math.round(sourceVideo.duration)}s`;
+                metaFileDuration.textContent = `${sourceVideo.duration.toFixed(1)}s`;
+                
+                trimStart = 0;
+                trimEnd = sourceVideo.duration;
+                trimStartInput.value = 0;
+                trimStartInput.max = sourceVideo.duration.toFixed(1);
+                trimEndInput.value = sourceVideo.duration.toFixed(1);
+                trimEndInput.max = sourceVideo.duration.toFixed(1);
+                seekSlider.max = sourceVideo.duration;
+                updateTrimUI();
+                updateCropLabel();
+
                 startBtn.disabled = false;
+                syncOverlaySize();
             };
 
             resultCard.classList.add('hidden');
         }
 
-        // Native Compression Logic using HTML5 Canvas + MediaRecorder + Web Audio API
-        startBtn.addEventListener('click', async () => {
-            if (isProcessing) {
-                // Abort action
-                abortEncoding = true;
+        playPauseBtn.addEventListener('click', () => {
+            if (sourceVideo.paused) {
+                if (sourceVideo.currentTime >= trimEnd) sourceVideo.currentTime = trimStart;
+                sourceVideo.play();
+            } else {
+                sourceVideo.pause();
+            }
+        });
+
+        sourceVideo.addEventListener('play', () => {
+            playIcon.classList.add('hidden');
+            pauseIcon.classList.remove('hidden');
+        });
+        sourceVideo.addEventListener('pause', () => {
+            playIcon.classList.remove('hidden');
+            pauseIcon.classList.add('hidden');
+        });
+        sourceVideo.addEventListener('timeupdate', () => {
+            if (!isProcessing) {
+                seekSlider.value = sourceVideo.currentTime;
+                timeDisplay.textContent = `${formatTime(sourceVideo.currentTime)} / ${formatTime(sourceVideo.duration)}`;
+            }
+        });
+        seekSlider.addEventListener('input', () => {
+            sourceVideo.currentTime = parseFloat(seekSlider.value);
+        });
+
+        // --- Interactive Overlay Canvas (Crop & Object Removal UI) ---
+        function syncOverlaySize() {
+            if (!sourceVideo.videoWidth) return;
+            const rect = sourceVideo.getBoundingClientRect();
+            const stageRect = document.getElementById('previewStage').getBoundingClientRect();
+            
+            overlayCanvas.style.left = `${rect.left - stageRect.left}px`;
+            overlayCanvas.style.top = `${rect.top - stageRect.top}px`;
+            overlayCanvas.width = Math.max(1, Math.round(rect.width));
+            overlayCanvas.height = Math.max(1, Math.round(rect.height));
+            drawOverlay();
+        }
+        window.addEventListener('resize', () => {
+            applyPreviewRotationCSS();
+            syncOverlaySize();
+        });
+
+        function drawOverlay() {
+            const w = overlayCanvas.width;
+            const h = overlayCanvas.height;
+            overlayCtx.clearRect(0, 0, w, h);
+
+            // 1. Draw Crop Overlay
+            if (cropEnabled) {
+                const cx = cropRect.x * w;
+                const cy = cropRect.y * h;
+                const cw = cropRect.w * w;
+                const ch = cropRect.h * h;
+
+                // Dim outer area
+                overlayCtx.fillStyle = 'rgba(0, 0, 0, 0.55)';
+                overlayCtx.fillRect(0, 0, w, cy);
+                overlayCtx.fillRect(0, cy + ch, w, h - (cy + ch));
+                overlayCtx.fillRect(0, cy, cx, ch);
+                overlayCtx.fillRect(cx + cw, cy, w - (cx + cw), ch);
+
+                // Border & Rule of Thirds Grid
+                overlayCtx.strokeStyle = '#38bdf8';
+                overlayCtx.lineWidth = 2;
+                overlayCtx.strokeRect(cx, cy, cw, ch);
+
+                overlayCtx.strokeStyle = 'rgba(255,255,255,0.25)';
+                overlayCtx.lineWidth = 1;
+                overlayCtx.beginPath();
+                overlayCtx.moveTo(cx + cw / 3, cy); overlayCtx.lineTo(cx + cw / 3, cy + ch);
+                overlayCtx.moveTo(cx + (2 * cw) / 3, cy); overlayCtx.lineTo(cx + (2 * cw) / 3, cy + ch);
+                overlayCtx.moveTo(cx, cy + ch / 3); overlayCtx.lineTo(cx + cw, cy + ch / 3);
+                overlayCtx.moveTo(cx, cy + (2 * ch) / 3); overlayCtx.lineTo(cx + cw, cy + (2 * ch) / 3);
+                overlayCtx.stroke();
+
+                // Corner Handles
+                const hs = 8;
+                overlayCtx.fillStyle = '#38bdf8';
+                [[cx, cy], [cx + cw, cy], [cx, cy + ch], [cx + cw, cy + ch]].forEach(([hx, hy]) => {
+                    overlayCtx.fillRect(hx - hs / 2, hy - hs / 2, hs, hs);
+                });
+            }
+
+            // 2. Draw Object Removal Masks
+            removalMasks.forEach((m, idx) => {
+                const mx = m.x * w;
+                const my = m.y * h;
+                const mw = m.w * w;
+                const mh = m.h * h;
+
+                overlayCtx.fillStyle = 'rgba(244, 63, 94, 0.35)';
+                overlayCtx.fillRect(mx, my, mw, mh);
+                overlayCtx.strokeStyle = '#f43f5e';
+                overlayCtx.lineWidth = 2;
+                overlayCtx.setLineDash([4, 3]);
+                overlayCtx.strokeRect(mx, my, mw, mh);
+                overlayCtx.setLineDash([]);
+
+                // Label
+                overlayCtx.fillStyle = '#f43f5e';
+                overlayCtx.fillRect(mx, Math.max(0, my - 16), 44, 16);
+                overlayCtx.fillStyle = '#ffffff';
+                overlayCtx.font = 'bold 10px sans-serif';
+                overlayCtx.fillText(`Mask ${idx + 1}`, mx + 4, Math.max(11, my - 4));
+            });
+
+            // 3. Draw active mask creation box
+            if (dragState && dragState.type === 'newMask') {
+                const mx = dragState.curX * w;
+                const my = dragState.curY * h;
+                const mw = dragState.curW * w;
+                const mh = dragState.curH * h;
+                overlayCtx.fillStyle = 'rgba(244, 63, 94, 0.3)';
+                overlayCtx.fillRect(mx, my, mw, mh);
+                overlayCtx.strokeStyle = '#fda4af';
+                overlayCtx.lineWidth = 2;
+                overlayCtx.strokeRect(mx, my, mw, mh);
+            }
+        }
+
+        function getNormalizedPos(e) {
+            const rect = overlayCanvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            return {
+                x: Math.max(0, Math.min(1, (clientX - rect.left) / rect.width)),
+                y: Math.max(0, Math.min(1, (clientY - rect.top) / rect.height))
+            };
+        }
+
+        overlayCanvas.addEventListener('pointerdown', (e) => {
+            if (!selectedFile || isProcessing) return;
+            const pos = getNormalizedPos(e);
+
+            // Handle Remove Object Mode
+            if (activeTab === 'remove') {
+                // Check if user clicked inside an existing mask to delete it
+                for (let i = removalMasks.length - 1; i >= 0; i--) {
+                    const m = removalMasks[i];
+                    if (pos.x >= m.x && pos.x <= m.x + m.w && pos.y >= m.y && pos.y <= m.y + m.h) {
+                        removalMasks.splice(i, 1);
+                        maskCount.textContent = removalMasks.length;
+                        drawOverlay();
+                        return;
+                    }
+                }
+                dragState = {
+                    type: 'newMask',
+                    startX: pos.x,
+                    startY: pos.y,
+                    curX: pos.x,
+                    curY: pos.y,
+                    curW: 0,
+                    curH: 0
+                };
+                overlayCanvas.setPointerCapture(e.pointerId);
                 return;
             }
 
+            // Handle Crop Mode
+            if (cropEnabled) {
+                const tol = 0.04;
+                const { x, y, w, h } = cropRect;
+                const nearLeft = Math.abs(pos.x - x) < tol;
+                const nearRight = Math.abs(pos.x - (x + w)) < tol;
+                const nearTop = Math.abs(pos.y - y) < tol;
+                const nearBottom = Math.abs(pos.y - (y + h)) < tol;
+
+                let handle = null;
+                if (nearLeft && nearTop) handle = 'tl';
+                else if (nearRight && nearTop) handle = 'tr';
+                else if (nearLeft && nearBottom) handle = 'bl';
+                else if (nearRight && nearBottom) handle = 'br';
+                else if (pos.x > x && pos.x < x + w && pos.y > y && pos.y < y + h) handle = 'move';
+
+                if (handle) {
+                    dragState = {
+                        type: 'crop',
+                        handle,
+                        startX: pos.x,
+                        startY: pos.y,
+                        origRect: { ...cropRect }
+                    };
+                    overlayCanvas.setPointerCapture(e.pointerId);
+                }
+            }
+        });
+
+        overlayCanvas.addEventListener('pointermove', (e) => {
+            if (!dragState) return;
+            const pos = getNormalizedPos(e);
+
+            if (dragState.type === 'newMask') {
+                dragState.curX = Math.min(dragState.startX, pos.x);
+                dragState.curY = Math.min(dragState.startY, pos.y);
+                dragState.curW = Math.abs(pos.x - dragState.startX);
+                dragState.curH = Math.abs(pos.y - dragState.startY);
+                drawOverlay();
+                return;
+            }
+
+            if (dragState.type === 'crop') {
+                const dx = pos.x - dragState.startX;
+                const dy = pos.y - dragState.startY;
+                const o = dragState.origRect;
+                const minSize = 0.08;
+
+                if (dragState.handle === 'move') {
+                    cropRect.x = Math.max(0, Math.min(1 - o.w, o.x + dx));
+                    cropRect.y = Math.max(0, Math.min(1 - o.h, o.y + dy));
+                } else {
+                    let nx = o.x, ny = o.y, nw = o.w, nh = o.h;
+                    if (dragState.handle.includes('l')) {
+                        nx = Math.max(0, Math.min(o.x + o.w - minSize, o.x + dx));
+                        nw = (o.x + o.w) - nx;
+                    }
+                    if (dragState.handle.includes('r')) {
+                        nw = Math.max(minSize, Math.min(1 - o.x, o.w + dx));
+                    }
+                    if (dragState.handle.includes('t')) {
+                        ny = Math.max(0, Math.min(o.y + o.h - minSize, o.y + dy));
+                        nh = (o.y + o.h) - ny;
+                    }
+                    if (dragState.handle.includes('b')) {
+                        nh = Math.max(minSize, Math.min(1 - o.y, o.h + dy));
+                    }
+
+                    if (cropAspect) {
+                        const rotDim = getRotatedDimensions();
+                        const frameRatio = rotDim.width / rotDim.height;
+                        nh = (nw * frameRatio) / cropAspect;
+                        if (ny + nh > 1) {
+                            nh = 1 - ny;
+                            nw = (nh * cropAspect) / frameRatio;
+                        }
+                    }
+                    cropRect = { x: nx, y: ny, w: nw, h: nh };
+                }
+                updateCropLabel();
+                drawOverlay();
+            }
+        });
+
+        overlayCanvas.addEventListener('pointerup', () => {
+            if (!dragState) return;
+            if (dragState.type === 'newMask' && dragState.curW > 0.015 && dragState.curH > 0.015) {
+                removalMasks.push({
+                    x: dragState.curX,
+                    y: dragState.curY,
+                    w: dragState.curW,
+                    h: dragState.curH
+                });
+                maskCount.textContent = removalMasks.length;
+            }
+            dragState = null;
+            drawOverlay();
+        });
+
+        // --- Per-Frame Object Removal Pixel Engine ---
+        function applyObjectRemoval(ctx, canvasW, canvasH) {
+            if (removalMasks.length === 0) return;
+            const method = removeMethodSelect.value;
+
+            removalMasks.forEach(mask => {
+                const x = Math.max(0, Math.floor(mask.x * canvasW));
+                const y = Math.max(0, Math.floor(mask.y * canvasH));
+                const w = Math.min(canvasW - x, Math.ceil(mask.w * canvasW));
+                const h = Math.min(canvasH - y, Math.ceil(mask.h * canvasH));
+                if (w <= 2 || h <= 2) return;
+
+                if (method === 'solid') {
+                    ctx.fillStyle = maskColorInput.value;
+                    ctx.fillRect(x, y, w, h);
+                } else if (method === 'blur') {
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.rect(x, y, w, h);
+                    ctx.clip();
+                    ctx.filter = 'blur(16px)';
+                    // Redraw slightly expanded region so blur edges don't bleed transparent pixels
+                    ctx.drawImage(ctx.canvas, x - 16, y - 16, w + 32, h + 32, x - 16, y - 16, w + 32, h + 32);
+                    ctx.restore();
+                } else if (method === 'inpaint') {
+                    // Bilinear Boundary Interpolation (Smart Edge-Fill)
+                    const pad = 2;
+                    const sx = Math.max(0, x - pad);
+                    const sy = Math.max(0, y - pad);
+                    const sw = Math.min(canvasW - sx, w + pad * 2);
+                    const sh = Math.min(canvasH - sy, h + pad * 2);
+
+                    const imgData = ctx.getImageData(sx, sy, sw, sh);
+                    const d = imgData.data;
+                    const innerX = x - sx;
+                    const innerY = y - sy;
+
+                    for (let py = innerY; py < innerY + h; py++) {
+                        const ty = (py - innerY) / Math.max(1, h - 1);
+                        const topIdx = (0 * sw + Math.min(sw - 1, innerX)) * 4;
+                        const botIdx = ((sh - 1) * sw + Math.min(sw - 1, innerX)) * 4;
+
+                        for (let px = innerX; px < innerX + w; px++) {
+                            const tx = (px - innerX) / Math.max(1, w - 1);
+                            const leftIdx = (py * sw + 0) * 4;
+                            const rightIdx = (py * sw + (sw - 1)) * 4;
+                            const topColIdx = (0 * sw + px) * 4;
+                            const botColIdx = ((sh - 1) * sw + px) * 4;
+
+                            // Weight inversely by distance to closest edge
+                            const wL = 1 - tx, wR = tx, wT = 1 - ty, wB = ty;
+                            const wSum = wL + wR + wT + wB;
+
+                            const dstIdx = (py * sw + px) * 4;
+                            for (let c = 0; c < 3; c++) {
+                                const val = (
+                                    d[leftIdx + c] * wL +
+                                    d[rightIdx + c] * wR +
+                                    d[topColIdx + c] * wT +
+                                    d[botColIdx + c] * wB
+                                ) / wSum;
+                                d[dstIdx + c] = val;
+                            }
+                        }
+                    }
+                    ctx.putImageData(imgData, sx, sy);
+                }
+            });
+        }
+
+        // --- Main Export & Compression Pipeline ---
+        startBtn.addEventListener('click', async () => {
+            if (isProcessing) {
+                abortEncoding = true;
+                return;
+            }
             if (!selectedFile || !sourceVideo.duration) return;
 
             isProcessing = true;
@@ -365,96 +1033,130 @@
             progressBar.style.width = '0%';
             progressPercent.textContent = '0%';
 
-            // Calculate target dimension
-            let targetWidth = sourceVideo.videoWidth;
-            let targetHeight = sourceVideo.videoHeight;
+            // 1. Setup Intermediate Rotated Canvas
+            const rotDim = getRotatedDimensions();
+            workCanvas.width = rotDim.width;
+            workCanvas.height = rotDim.height;
+
+            // 2. Calculate Crop Region in Rotated Pixels
+            const activeCrop = cropEnabled ? cropRect : { x: 0, y: 0, w: 1, h: 1 };
+            const cropX = Math.round(activeCrop.x * rotDim.width);
+            const cropY = Math.round(activeCrop.y * rotDim.height);
+            const cropW = Math.max(16, Math.round(activeCrop.w * rotDim.width));
+            const cropH = Math.max(16, Math.round(activeCrop.h * rotDim.height));
+
+            // 3. Calculate Final Scaled Output Dimensions
+            let targetWidth = cropW;
+            let targetHeight = cropH;
             const targetRes = parseInt(resSelect.value, 10);
 
-            if (targetRes < targetHeight) {
-                const scale = targetRes / targetHeight;
-                targetHeight = targetRes;
-                targetWidth = Math.round(sourceVideo.videoWidth * scale);
+            if (targetRes > 1 && targetRes < Math.max(targetWidth, targetHeight)) {
+                if (targetHeight >= targetWidth && targetRes < targetHeight) {
+                    const scale = targetRes / targetHeight;
+                    targetHeight = targetRes;
+                    targetWidth = Math.round(cropW * scale);
+                } else if (targetWidth > targetHeight && targetRes < targetWidth) {
+                    const scale = targetRes / targetWidth;
+                    targetWidth = targetRes;
+                    targetHeight = Math.round(cropH * scale);
+                }
             }
-            // Ensure even width/height for codec compatibility
             if (targetWidth % 2 !== 0) targetWidth--;
             if (targetHeight % 2 !== 0) targetHeight--;
 
             renderCanvas.width = targetWidth;
             renderCanvas.height = targetHeight;
-            const ctx = renderCanvas.getContext('2d');
 
-            // Set up Web Audio API to capture source audio stream without feedback
-            let audioCtx, sourceNode, destNode, audioTrack;
+            // 4. Setup Reusable Web Audio API Routing
+            let destNode, audioTrack;
             try {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                sourceNode = audioCtx.createMediaElementSource(sourceVideo);
-                destNode = audioCtx.createMediaStreamDestination();
-                sourceNode.connect(destNode);
-                // Connect to destination if you want to listen, but left disconnected to keep muted during encode
+                if (!sharedAudioCtx) {
+                    sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    sharedSourceNode = sharedAudioCtx.createMediaElementSource(sourceVideo);
+                }
+                if (sharedAudioCtx.state === 'suspended') {
+                    await sharedAudioCtx.resume();
+                }
+                destNode = sharedAudioCtx.createMediaStreamDestination();
+                sharedSourceNode.connect(destNode);
                 audioTrack = destNode.stream.getAudioTracks()[0];
             } catch (err) {
-                console.warn("Audio Context creation failed or restricted:", err);
+                console.warn("Audio capture skipped:", err);
             }
 
-            // Capture Canvas video stream at 30 FPS
+            // 5. Initialize MediaRecorder
             const canvasStream = renderCanvas.captureStream(30);
-            if (audioTrack) {
-                canvasStream.addTrack(audioTrack);
-            }
+            if (audioTrack) canvasStream.addTrack(audioTrack);
 
-            // Target Bitrate in bits per second
             const targetBitrate = parseFloat(bitrateSlider.value) * 1000000;
             const selectedMime = formatSelect.value;
-
-            const options = {
-                videoBitsPerSecond: targetBitrate
-            };
+            const options = { videoBitsPerSecond: targetBitrate };
             if (selectedMime) options.mimeType = selectedMime;
 
             let mediaRecorder;
             try {
                 mediaRecorder = new MediaRecorder(canvasStream, options);
             } catch (e) {
-                console.warn("Failed with selected mimeType, falling back to default", e);
                 mediaRecorder = new MediaRecorder(canvasStream);
             }
 
             const recordedChunks = [];
-            mediaRecorder.ondataavailable = (event) => {
-                if (event.data && event.data.size > 0) {
-                    recordedChunks.push(event.data);
-                }
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data && e.data.size > 0) recordedChunks.push(e.data);
             };
 
-            const startTime = Date.now();
-            mediaRecorder.start(100); // collect 100ms chunks
+            const clipStart = trimStart;
+            const clipEnd = trimEnd > trimStart ? trimEnd : sourceVideo.duration;
+            const clipTotalDuration = Math.max(0.1, clipEnd - clipStart);
 
-            // Reset video playback to beginning
-            sourceVideo.currentTime = 0;
-            sourceVideo.muted = false; // Required for media element audio processing
+            const startTime = Date.now();
+            mediaRecorder.start(100);
+
+            sourceVideo.currentTime = clipStart;
+            sourceVideo.muted = false;
 
             try {
                 await sourceVideo.play();
             } catch (e) {
-                console.error("Autoplay failed:", e);
+                console.error("Playback error:", e);
             }
 
-            // Frame processing loop using requestAnimationFrame
+            // 6. Frame Render Pipeline: Rotate -> Erase Objects -> Crop & Scale
             function renderFrame() {
-                if (abortEncoding || sourceVideo.ended || sourceVideo.paused) {
+                if (abortEncoding || sourceVideo.ended || sourceVideo.paused || sourceVideo.currentTime >= clipEnd) {
                     if (mediaRecorder.state !== 'inactive') {
                         mediaRecorder.stop();
                     }
                     return;
                 }
 
-                // Draw resized frame onto canvas
-                ctx.drawImage(sourceVideo, 0, 0, targetWidth, targetHeight);
+                // Step A: Draw rotated full frame onto workCanvas
+                workCtx.save();
+                workCtx.clearRect(0, 0, rotDim.width, rotDim.height);
+                workCtx.translate(rotDim.width / 2, rotDim.height / 2);
+                workCtx.rotate((rotation * Math.PI) / 180);
+                workCtx.drawImage(
+                    sourceVideo,
+                    -sourceVideo.videoWidth / 2,
+                    -sourceVideo.videoHeight / 2,
+                    sourceVideo.videoWidth,
+                    sourceVideo.videoHeight
+                );
+                workCtx.restore();
 
-                // Calculate progress
-                const current = sourceVideo.currentTime;
-                const total = sourceVideo.duration;
-                const percent = Math.min(100, Math.round((current / total) * 100));
+                // Step B: Apply Object Removal Masks on workCanvas
+                applyObjectRemoval(workCtx, rotDim.width, rotDim.height);
+
+                // Step C: Crop & Scale onto final renderCanvas
+                renderCtx.drawImage(
+                    workCanvas,
+                    cropX, cropY, cropW, cropH,
+                    0, 0, targetWidth, targetHeight
+                );
+
+                // Update Progress UI
+                const elapsedClip = Math.max(0, sourceVideo.currentTime - clipStart);
+                const percent = Math.min(100, Math.round((elapsedClip / clipTotalDuration) * 100));
 
                 progressBar.style.width = `${percent}%`;
                 progressPercent.textContent = `${percent}%`;
@@ -462,10 +1164,9 @@
                 const elapsedSec = (Date.now() - startTime) / 1000;
                 timeElapsed.textContent = formatTime(elapsedSec);
 
-                if (percent > 0) {
-                    const estTotalSec = (elapsedSec / (percent / 100));
-                    const remainingSec = Math.max(0, estTotalSec - elapsedSec);
-                    timeRemaining.textContent = formatTime(remainingSec);
+                if (percent > 2) {
+                    const estTotalSec = elapsedSec / (percent / 100);
+                    timeRemaining.textContent = formatTime(Math.max(0, estTotalSec - elapsedSec));
                 }
 
                 requestAnimationFrame(renderFrame);
@@ -473,24 +1174,23 @@
 
             requestAnimationFrame(renderFrame);
 
-            // Handle completion of MediaRecorder
             mediaRecorder.onstop = () => {
                 sourceVideo.pause();
-                if (audioCtx) audioCtx.close();
+                if (sharedSourceNode && destNode) {
+                    try { sharedSourceNode.disconnect(destNode); } catch (_) {}
+                }
 
-                // Reset button UI
                 isProcessing = false;
                 startBtn.classList.replace('bg-rose-600', 'bg-sky-600');
                 startBtn.classList.replace('hover:bg-rose-700', 'hover:bg-sky-700');
-                btnText.textContent = "Start Compression";
+                btnText.textContent = "Process & Compress Video";
                 progressCard.classList.add('hidden');
 
                 if (abortEncoding) {
-                    alert("Compression cancelled by user.");
+                    alert("Processing cancelled.");
                     return;
                 }
 
-                // Finalize output video blob
                 const blobType = mediaRecorder.mimeType || 'video/webm';
                 const compressedBlob = new Blob(recordedChunks, { type: blobType });
 
@@ -501,9 +1201,8 @@
                 downloadBtn.href = compressedObjectUrl;
 
                 const ext = blobType.includes('mp4') ? 'mp4' : 'webm';
-                downloadBtn.download = `compressed_${selectedFile.name.replace(/\.[^/.]+$/, "")}.${ext}`;
+                downloadBtn.download = `edited_${selectedFile.name.replace(/\.[^/.]+$/, "")}.${ext}`;
 
-                // Calculate Stats
                 const origSize = selectedFile.size;
                 const compSize = compressedBlob.size;
                 const diff = origSize - compSize;
@@ -525,7 +1224,6 @@
             };
         });
 
-        // Initialize Formats on startup
         populateSupportedFormats();
     </script>
 </body>
